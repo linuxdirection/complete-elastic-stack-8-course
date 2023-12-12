@@ -1,0 +1,46 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "httpd" do |httpd|
+    httpd.vm.box = "generic/ubuntu2204"
+    httpd.vm.hostname = "httpd.example.com"
+
+    httpd.vm.provider "virtualbox" do |vb|
+      vb.name = "httpd"
+      vb.memory = "1024"
+    end
+
+    # Copy yml files and http_ca.crt from the current directory to the httpd VM
+    httpd.vm.provision "file", source: "./files/filebeat.yml", destination: "/tmp/filebeat.yml"
+    httpd.vm.provision "file", source: "./files/metricbeat.yml", destination: "/tmp/metricbeat.yml"
+    httpd.vm.provision "file", source: "./files/packetbeat.yml", destination: "/tmp/packetbeat.yml"
+    httpd.vm.provision "file", source: "./files/http_ca.crt", destination: "/tmp/http_ca.crt"
+
+    # Provisioning using the shell script for httpd
+    httpd.vm.provision "shell", path: "./scripts/common.sh"
+    httpd.vm.provision "shell", path: "./scripts/setup_filebeat.sh"
+    httpd.vm.provision "shell", path: "./scripts/setup_metricbeat.sh"
+    httpd.vm.provision "shell", path: "./scripts/setup_packetbeat.sh"
+  end
+
+  # Configuration for the second VM: mysql-master
+  config.vm.define "mysql-master" do |mysqlm|
+    mysqlm.vm.box = "generic/ubuntu2204"
+    mysqlm.vm.hostname = "mysqlm.example.com"
+
+    mysqlm.vm.provider "virtualbox" do |vb|
+      vb.name = "mysql-master"
+      vb.memory = "1024"
+    end
+
+    # Copy yml files and http_ca.crt from the current directory to the mysql-master VM
+    mysqlm.vm.provision "file", source: "./files/filebeat.yml", destination: "/tmp/filebeat.yml"
+    mysqlm.vm.provision "file", source: "./files/metricbeat.yml", destination: "/tmp/metricbeat.yml"
+    mysqlm.vm.provision "file", source: "./files/packetbeat.yml", destination: "/tmp/packetbeat.yml"
+    mysqlm.vm.provision "file", source: "./files/http_ca.crt", destination: "/tmp/http_ca.crt"
+
+    # Provisioning using the shell script for mysql-master
+    mysqlm.vm.provision "shell", path: "./scripts/common.sh"
+    mysqlm.vm.provision "shell", path: "./scripts/setup_filebeat.sh"
+    mysqlm.vm.provision "shell", path: "./scripts/setup_metricbeat.sh"
+    mysqlm.vm.provision "shell", path: "./scripts/setup_packetbeat.sh"
+  end
+end
