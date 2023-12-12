@@ -1,0 +1,19 @@
+Vagrant.configure("2") do |config|
+    config.vm.define "elk" do |elk|
+      elk.vm.box = "ubuntu/bionic64"
+      elk.vm.hostname = "elk"
+  
+      # Forward ports
+      elk.vm.network "forwarded_port", guest: 9200, host: 9200
+      elk.vm.network "forwarded_port", guest: 9300, host: 9300
+  
+      # VirtualBox specific settings
+      elk.vm.provider "virtualbox" do |vb|
+        vb.name = "elk"
+        vb.memory = "1024"
+        vb.cpus = 2
+      end
+      elk.vm.provision "shell", path: "./scripts/create_swap.sh"
+    end
+  end
+  
