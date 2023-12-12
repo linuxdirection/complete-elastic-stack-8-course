@@ -1,0 +1,35 @@
+packetbeat.interfaces.device: any
+packetbeat.interfaces.poll_default_route: 1m
+packetbeat.interfaces.internal_networks:
+  - private
+packetbeat.flows:
+  timeout: 30s
+  period: 10s
+packetbeat.protocols:
+- type: icmp
+  enabled: true
+- type: dns
+  ports: [53]
+output.elasticsearch:
+  hosts: ["replace_me:9200"]
+  ssl.certificate_authorities: ["/etc/certs/http_ca.crt"]
+  ssl.verification_mode: none
+  protocol: "https"
+  username: 'elastic'
+  password: 'replace_me'
+processors:
+  - # Add forwarded to tags when processing data from a network tap or mirror.
+    if.contains.tags: forwarded
+    then:
+      - drop_fields:
+          fields: [host]
+    else:
+      - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - detect_mime_type:
+      field: http.request.body.content
+      target: http.request.mime_type
+  - detect_mime_type:
+      field: http.response.body.content
+      target: http.response.mime_type
