@@ -20,6 +20,7 @@ To start the cluster, navigate to the directory containing the `docker-compose.y
 
 ```bash
 docker-compose up -d
+```
 
 This command will start all services defined in the `docker-compose.yml` file in detached mode.
 
@@ -28,7 +29,7 @@ To stop the cluster, run:
 
 ```bash
 docker-compose down
-
+```
 This command stops and removes the containers, networks, and volumes created by `docker-compose up`.
 
 ## Caution
