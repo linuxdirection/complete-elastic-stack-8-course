@@ -32,4 +32,7 @@ docker-compose down
 This command stops and removes the containers, networks, and volumes created by `docker-compose up`.
 
 ## Caution
-This setup includes an initial service (`setup`) to generate SSL certificates and set user passwords. Ensure the `.env` file is properly configured before starting the services. Also, be aware that using `docker-compose down` will remove the containers and their data. For persistent data storage, ensure your data volumes are configured correctly.
+This setup includes an initial service (`setup`) to generate SSL certificates and set user passwords.
+Ensure the `.env` file is properly configured before starting the services. Also,
+be aware that using `docker-compose down` will remove the containers and their data.
+For persistent data storage, ensure your data volumes are configured correctly.
